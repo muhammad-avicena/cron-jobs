@@ -17,8 +17,8 @@ jobs:
         with:
           python-version: '3.x'
 
-      # - name: Install Dependencies
-      #   run: pip install transformers
+      - name: Install Dependencies
+        run: pip install transformers dotenv
 
       - name: Run Script
         run: python update_number.py
