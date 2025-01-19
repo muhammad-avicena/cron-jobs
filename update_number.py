@@ -3,6 +3,10 @@ import os
 import random
 import subprocess
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_dir)
@@ -26,7 +30,7 @@ def generate_random_commit_message():
         model="openai-community/gpt2",
     )
     prompt = """
-        Generate a Git commit message following the Conventional Commits standard. The message should include a type, an optional scope, and a subject.Please keep it short. Here are some examples:
+        Generate a Git commit message following the Conventional Commits standard. The message should include a type, an optional scope, and a subject. Please keep it short. Here are some examples:
 
         - feat(auth): add user authentication module
         - fix(api): resolve null pointer exception in user endpoint
@@ -40,9 +44,9 @@ def generate_random_commit_message():
         prompt,
         max_new_tokens=50,
         num_return_sequences=1,
-        temperature=0.9,  # Slightly higher for creativity
-        top_k=50,  # Limits sampling to top 50 logits
-        top_p=0.9,  # Nucleus sampling for diversity
+        temperature=0.9,
+        top_k=50,
+        top_p=0.9,
         truncation=True,
     )
     text = generated[0]["generated_text"]
@@ -56,8 +60,8 @@ def generate_random_commit_message():
 def git_commit():
     # Stage the changes
     subprocess.run(["git", "add", "number.txt"])
-    # Create commit with current date
-    if "FANCY_JOB_USE_LLM" in os.environ:
+    # Create commit with current date or generate AI-based commit message
+    if os.getenv("FANCY_JOB_USE_LLM") == "True":
         commit_message = generate_random_commit_message()
     else:
         date = datetime.now().strftime("%Y-%m-%d")
